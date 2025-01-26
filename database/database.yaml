@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-db
+spec:
+  selector:
+    matchLabels:
+      app: postgres-db
+  template:
+    metadata:
+      labels:
+        app: postgres-db
+    spec:
+      containers:
+        - name: postgres-db
+          image: postgres:17.2 
+        
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+        
+          ports:
+          - containerPort: 5432
+        
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata # what is this
+            - name: POSTGRES_DB
+              value: hemnet
+            - name: POSTGRES_USER
+              value: shahin
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: POSTGRES_PASSWORD
+
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgresdata
+
+      volumes:
+        - name: postgresdata
+          persistentVolumeClaim:
+            claimName: database-volume-claim
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database-volume-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
