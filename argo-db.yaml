@@ -1,0 +1,16 @@
+# https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dev-database
+  namespace: argocd
+spec:
+  project: default
+  source: 
+    repoURL: https://github.com/shahin-salehi/on-prem-cluster
+    targetRevision: dev
+    path: database
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
