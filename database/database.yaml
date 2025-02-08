@@ -27,14 +27,14 @@ spec:
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata # what is this
             - name: POSTGRES_DB
-              value: hemnet
+              value: dev 
             - name: POSTGRES_USER
               value: shahin
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres
-                  key: POSTGRES_PASSWORD
+                  key: password
 
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
@@ -55,3 +55,12 @@ spec:
   resources:
     requests:
       storage: 20Gi
+---
+# dev secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres 
+type: Opaque
+data:
+  password: cGFzc3dvcmQ= # password base64
