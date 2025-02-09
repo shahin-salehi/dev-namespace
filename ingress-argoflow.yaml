@@ -4,6 +4,7 @@ metadata:
   name: argoflow-ingress
   namespace: argo
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-cert-manager
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
@@ -20,3 +21,9 @@ spec:
             name: argo-server
             port:
               number: 2746
+
+  # https://cert-manager.io/docs/usage/ingress/
+  tls: # # < placing a host in the TLS config will determine what ends up in the cert's subjectAltNames
+  - hosts:
+    - argo-dev.conamur-software.com
+    secretName: ingress-tls # < cert-manager will store the created certificate in this secret.
